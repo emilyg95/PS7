@@ -24,13 +24,26 @@ March2018 <- March2018 %>%
 March2018$Secondary <- NULL
 March2018$Secondary2 <- NULL
 
+# determines date is coded as a character
+str(March2018$Date)
+
+# converts to date format
+March2018$Date <- as.Date(March2018$Date, format = "%m/%d/%Y")
+
+# checks new format
+str(March2018$Date)
+
+# orders by date and removes dates prior to March 1 2018
+March2018 <- March2018 %>% 
+  arrange(Date) %>%
+  filter(Date >= "2018-03-01")
+View(March2018)
+  
 #sorts crime by type and date
-crime_date <- March2018 %>% 
+crime_type_date <- March2018 %>% 
   group_by(Date, Main) %>% 
   summarise(count=n())
-crime_date
-
-# you can see there are some dates outside of March listed but they were coded March by the police presumably for a reason so I'm leaving them
+crime_type_date
 
 # lists crime count by description
 crime_type <- March2018 %>% 
@@ -38,7 +51,7 @@ crime_type <- March2018 %>%
   summarise(count=n())
 crime_type
 
-# most frequently occuring crime in March is larceny
+# most frequently occuring crime in March is larceny with 911 occurrences
 top_n(crime_type, 1)
 
 # lists crime count by neighborhood and date
@@ -53,7 +66,7 @@ neighborhood_crime <- March2018 %>%
   summarise(count=n())
 neighborhood_crime
 
-# neighborhood 35 has the most crime in March with 305 incidents
+# neighborhood 35 has the most crime in March with 298 incidents
 top_n(neighborhood_crime, 1)
 
 # factors main description to identify crimes related to robbery
@@ -84,8 +97,20 @@ neighborhood_crime <- mutate(neighborhood_crime, Robbery_Prop = Robbery_Count/Cr
 # neighborhoods 45 and 85 have the highest proportions of robbery related crime -- 100%
 top_n(neighborhood_crime, 1)
 
+#sorts crime by date
+crime_date <- March2018 %>% 
+  group_by(Date) %>% 
+  summarise(count=n())
+crime_date
 
-ggplot(data=diamonds)
+
+ggplot(data=crime_date)+
+  geom_line(mapping = aes(x = Date, y = count))+
+              geom_point(mapping = aes(x = Date, y = count))+
+  labs(title = "March Crime Mapped Over Time")+
+  xlab("Date")+
+  ylab("Number of Crimes")
+
 
 
 
