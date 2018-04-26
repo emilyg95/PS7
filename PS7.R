@@ -97,13 +97,13 @@ neighborhood_crime <- mutate(neighborhood_crime, Robbery_Prop = Robbery_Count/Cr
 # neighborhoods 45 and 85 have the highest proportions of robbery related crime -- 100%
 top_n(neighborhood_crime, 1)
 
-#sorts crime by date
+# sorts crime by date
 crime_date <- March2018 %>% 
   group_by(Date) %>% 
   summarise(count=n())
 crime_date
 
-
+# plots crime by date
 ggplot(data=crime_date)+
   geom_line(mapping = aes(x = Date, y = count))+
               geom_point(mapping = aes(x = Date, y = count))+
@@ -111,8 +111,28 @@ ggplot(data=crime_date)+
   xlab("Date")+
   ylab("Number of Crimes")
 
+# plots crime by date
+ggplot(data=crime_date)+
+  geom_line(mapping = aes(x = Date, y = count))+
+  geom_point(mapping = aes(x = Date, y = count))+
+  labs(title = "March Crime Mapped Over Time")+
+  xlab("Date")+
+  ylab("Number of Crimes")
 
+# sorts crime by date & district
+district_date <- March2018 %>% 
+  group_by(Date, District) %>% 
+  summarise(count=n())
+district_date
 
+# transforms district to factor for coloring
+district_date$District <- as.factor(district_date$District)
+levels(district_date$District)
 
-
-
+# plots crime by date with colors for district
+ggplot(data=district_date, aes(x = Date, y = count))+
+  geom_point(mapping = aes(color = District))+
+  scale_color_manual(values = c("red", "orange", "yellow", "green", "blue", "purple", "violet"))+
+  labs(title = "March Crime Mapped Over Time by District")+
+  xlab("Date")+
+  ylab("Number of Crimes")
